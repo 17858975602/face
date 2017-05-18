@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .top{
+            text-align: center;
+        }
+        #center{
+            width: 800px;
+            height: 500px;
+            position: relative;
+            top:0;
+            left: 0;
+            border: 1px solid darkorange;
+            margin: 20px auto;
+        }
+        #center_l{
+            width: 100px;
+            height: 80px;
+            text-align: center;
+            position: relative;
+            left: -102px;
+            top: -1px;
+            border: 1px solid darkorange;
+        }
+
+    </style>
+    <script src="myFn.js"></script>
+    <script>
+        window.onload= function () {
+
+            //        获取元素
+            var inp=document.getElementById('inp')
+            var center_r=document.getElementById('center_r');
+            var center=document.getElementById('center');
+            var img=document.getElementsByTagName('img');
+
+            var b=document.getElementsByTagName('b');
+//            整个div的高度
+            var pos=parseInt(getStyle(center,'top'));
+//            设置定时器
+            var timer=null;
+            var timer2=null;
+            var timer3=null;
+//            算分数的数组
+            var score=[];
+            var score1=[];
+//            速度的变化
+            var speech=100;
+            var arr=['img/1.png','img/2.png','img/3.png','img/4.png','img/5.png','img/6.png','img/7.png','img/8.png','img/9.png','img/10.png','img/11.png']
+//        点击开始游戏后,按键不能用,value改变
+            
+            inp.onclick=function(){
+                inp.value='正在游戏中';
+                inp.disabled=true;
+                    face();
+            }
+//                让表情从各个地方出现
+               function face(){
+                   var thisLeft=Math.round(Math.random()*777)
+                   var html='<img style="position: absolute;top:0px;left:'+thisLeft+'px" src='+ arr[Math.round(Math.random()*10)]+'>';
+                   center_r.innerHTML=html;
+                   img[0].style.opacity=1;
+                    luoxia();
+               }
+
+
+
+//                表情自动下落
+                function luoxia(){
+                    var num=0;
+                    timer=setInterval(function () {
+                        img[0].style.top=num+'px';
+
+                        //   如果中途点击，就图片颤抖
+                        img[0].onclick= function () {
+                            clearInterval(timer)
+                            img[0].src="img/qq.png";
+                            speech=speech-10;
+
+                          return  changeLeft();
+                        }
+
+                        if(num>=478){
+                            clearInterval(timer)
+                            img[0].style.opacity=0;
+                            change();
+                        }
+                        num+=10;
+                    },speech)
+                }
+
+//               碰到边框，边框颤抖
+                function change(){
+                    var arrr=[];
+                    var num1=0;
+//                20,-20,18,-18,16,-16,.....2,-2,0
+                    for(var i=20;i>=0;i-=2){
+                        arrr.push(i,-i);
+                    }
+                    timer2=setInterval(function () {
+                        num1++;
+
+                        center.style.top=arrr[num1]+pos+'px';
+
+                        if(num1==arrr.length) {
+                            clearInterval(timer2);
+
+//                            计算失分的总数
+                            score.push(1);
+                            b[1].innerHTML=eval(score.join("+"));
+                            if(b[1].innerHTML==10){
+                              return  alert('失败了，请重新游戏');
+                                clearInterval(timer2)
+                            }
+                             return face();
+                        }
+                    },60)
+                }
+
+//                表情颤抖
+              function changeLeft(){
+                  var thisIndex=parseInt(getStyle(img[0],'left'))
+                  var arrrr=[];
+                  var num2=0;
+//                20,-20,18,-18,16,-16,.....2,-2,0
+                  for(var i=20;i>=0;i-=2){
+                      arrrr.push(i,-i);
+                  }
+
+                  timer3=setInterval(function () {
+                      img[0].style.left=arrrr[num2]+thisIndex+'px';
+                      num2++;
+                      if(num2==arrrr.length) {
+                          clearInterval(timer3);
+                          img[0].style.opacity=0;
+//                          计算得分的总数
+                          score1.push(1);
+                          b[0].innerHTML=eval(score1.join("+"));
+                          if(b[0].innerHTML==10){
+                              return  alert('成功了，哈哈哈');
+
+                          }
+                          return face();
+                      }
+                  },20)
+              }
+
+
+        }
+    </script>
+</head>
+<body>
+<div class="top">
+    <h2>看你的鼠标多块</h2>
+    <p>游戏说明：点击“开始游戏”，随机掉下QQ表情，点中它，千万别让它掉下去！！</p>
+    <input value="开始游戏" type="button" id="inp">
+</div>
+<div id="center">
+    <div id="center_l" >
+        <p >得分<b>0</b>分</p>
+        <p >失分<b>0</b>分</p>
+    </div>
+    <div id="center_r">
+
+    </div>
+
+</div>
+
+</body>
+</html>
